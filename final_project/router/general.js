@@ -3,65 +3,26 @@ const books = require("./booksdb.js");
 
 const general = express.Router();
 
-// Helper function for Task 10: Get all books using Promise
-const getBookList = () => {
-    return new Promise((resolve, reject) => {
-        resolve(books);
-    });
-};
-
-// GET ALL BOOKS (Task 10)
+// ✅ IMPORTANT: This must be defined
 general.get("/", (req, res) => {
-    getBookList()
-        .then((bookList) => res.json(bookList))
-        .catch((err) => res.status(500).json({ message: "Error fetching books" }));
+    return res.json(books);
 });
 
-// Helper function for Task 11: Get book by ISBN using Promise
-const getFromISBN = (isbn) => {
-    return new Promise((resolve, reject) => {
-        const book = books[isbn];
-        if (book) {
-            resolve(book);
-        } else {
-            reject({ message: "Book not found" });
-        }
-    });
-};
-
-// GET BY ISBN (Task 11)
+// GET BY ISBN
 general.get("/isbn/:isbn", (req, res) => {
-    getFromISBN(req.params.isbn)
-        .then((book) => res.json(book))
-        .catch((err) => res.status(404).json(err));
+    return res.json(books[req.params.isbn] || { message: "Book not found" });
 });
 
-// Helper function for Task 12: Get books by Author using Promise
-const getFromAuthor = (author) => {
-    return new Promise((resolve) => {
-        const filteredBooks = Object.values(books).filter(b => b.author === author);
-        resolve(filteredBooks);
-    });
-};
-
-// GET BY AUTHOR (Task 12)
+// GET BY AUTHOR
 general.get("/author/:author", (req, res) => {
-    getFromAuthor(req.params.author)
-        .then((booksByAuthor) => res.json(booksByAuthor));
+    const filtered = Object.values(books).filter(b => b.author === req.params.author);
+    return res.json(filtered);
 });
 
-// Helper function for Task 13: Get books by Title using Promise
-const getFromTitle = (title) => {
-    return new Promise((resolve) => {
-        const filteredBooks = Object.values(books).filter(b => b.title === title);
-        resolve(filteredBooks);
-    });
-};
-
-// GET BY TITLE (Task 13)
+// GET BY TITLE
 general.get("/title/:title", (req, res) => {
-    getFromTitle(req.params.title)
-        .then((booksByTitle) => res.json(booksByTitle));
+    const filtered = Object.values(books).filter(b => b.title === req.params.title);
+    return res.json(filtered);
 });
 
 // GET REVIEWS
